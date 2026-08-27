@@ -1,0 +1,21 @@
+# Xcode 用户数据与构建产物
+xcuserdata/
+*.xcuserstate
+build/
+DerivedData/
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 工具脚本缓存
+__pycache__/
+
+# Claude Code 会话数据（定时任务等，仅本机有效）
+.claude/

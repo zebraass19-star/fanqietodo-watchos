@@ -1,0 +1,19 @@
+# 行尾规范：仓库内一律 LF，防止 Windows 的 CRLF 破坏 Xcode 工程文件
+* text=auto
+
+*.pbxproj  text eol=lf
+*.plist    text eol=lf
+*.xcscheme text eol=lf
+*.json     text eol=lf
+*.swift    text eol=lf
+*.md       text eol=lf
+*.py       text eol=lf
+*.ps1      text eol=lf
+*.yml      text eol=lf
+*.yaml     text eol=lf
+*.editorconfig text eol=lf
+*.gitattributes text eol=lf
+*.gitignore text eol=lf
+
+# 二进制文件不做任何转换
+*.png binary

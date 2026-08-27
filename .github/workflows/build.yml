@@ -1,0 +1,27 @@
+# 云编译验证：在 GitHub 的 macOS 机器上用 Xcode 编译本工程。
+# 作用：Windows 上没有 Mac 也能验证「工程文件合法、代码可编译」。
+# 每次推送到 GitHub 后自动运行，也可以在仓库页面的 Actions 里手动触发。
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查 watchOS SDK 可用
+        run: xcodebuild -showsdks | grep watchos
+
+      - name: 编译 watchOS App（跳过签名）
+        run: >
+          xcodebuild
+          -project PomodoroWatch.xcodeproj
+          -scheme PomodoroWatch
+          -destination 'generic/platform=watchOS'
+          CODE_SIGNING_ALLOWED=NO
+          build

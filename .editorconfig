@@ -1,0 +1,8 @@
+# 统一文件格式：UTF-8、LF 换行（对 Xcode 工程文件至关重要，Windows 默认 CRLF 会破坏 pbxproj）
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
