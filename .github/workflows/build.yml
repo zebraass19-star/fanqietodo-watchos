@@ -18,10 +18,36 @@ jobs:
         run: xcodebuild -showsdks | grep watchos
 
       - name: 编译 watchOS App（跳过签名）
-        run: >
-          xcodebuild
-          -project PomodoroWatch.xcodeproj
-          -scheme PomodoroWatch
-          -destination 'generic/platform=watchOS'
-          CODE_SIGNING_ALLOWED=NO
-          build
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project PomodoroWatch.xcodeproj \
+            -scheme PomodoroWatch \
+            -destination 'generic/platform=watchOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tee build.log
+
+      # 编译失败时，把日志里每一行 error/warning 转成 GitHub 注释（annotations），
+      # 这样不用下载完整日志也能通过 API 读到具体错误（方便无 Mac 远程排错）。
+      - name: 提取编译错误为注释
+        if: always()
+        run: |
+          python3 - <<'PYEOF'
+          import re
+          pattern = re.compile(r'^(.*?):(\d+):(\d+):\s*(error|warning):\s*(.*)$')
+          seen = 0
+          with open('build.log', encoding='utf-8', errors='replace') as f:
+              for line in f:
+                  m = pattern.match(line.rstrip('\n'))
+                  if not m:
+                      continue
+                  path, ln, col, level, msg = m.groups()
+                  if '/fanqietodo-watchos/' in path:
+                      path = path.split('/fanqietodo-watchos/')[-1]
+                  else:
+                      path = path.split('/')[-1]
+                  print(f"::{level} file={path},line={ln},col={col}::{msg}")
+                  seen += 1
+          if seen == 0:
+              print("::notice::日志中未发现 xcodebuild 错误行")
+          PYEOF
