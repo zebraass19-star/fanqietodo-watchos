@@ -52,9 +52,8 @@ struct StatsView: View {
                 x: .value("日期", item.label),
                 y: .value("分钟", item.minutes)
             )
-            .width(.fixed(10)) // 柱宽限定必须紧跟 BarMark，放在 cornerRadius 之后会丢失类型
             .foregroundStyle(item.isToday ? Theme.orange : Theme.pastBar)
-            .cornerRadius(3)
+            .cornerRadius(3) // 柱宽由系统自动均分（watchOS 的 Charts 无固定柱宽 API，见 DESIGN §4.3）
         }
         .chartYAxis(.hidden)
         .chartXAxis {
