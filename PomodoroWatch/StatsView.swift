@@ -52,9 +52,9 @@ struct StatsView: View {
                 x: .value("日期", item.label),
                 y: .value("分钟", item.minutes)
             )
+            .width(.fixed(10)) // 柱宽限定必须紧跟 BarMark，放在 cornerRadius 之后会丢失类型
             .foregroundStyle(item.isToday ? Theme.orange : Theme.pastBar)
             .cornerRadius(3)
-            .width(.fixed(10))
         }
         .chartYAxis(.hidden)
         .chartXAxis {
