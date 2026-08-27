@@ -4,10 +4,15 @@
 //
 //  统计账本（docs/TECH.md §6：统计读写只在这里）。
 //  存储：UserDefaults 字典 dailyFocusMinutes：`"yyyy-MM-dd"` → 分钟数（docs/TECH.md §5）。
-//  阶段 6 将扩展近 7 天聚合等图表数据。
 //
 
 import Foundation
+
+/// 某一天的专注分钟快照（图表数据源；date 为该天零点）
+struct DayStat {
+    let date: Date
+    let minutes: Int
+}
 
 final class StatisticsStore {
 
@@ -36,5 +41,23 @@ final class StatisticsStore {
         defaults.set(all, forKey: StorageKeys.dailyFocusMinutes)
     }
 
-    // 阶段 6 扩展：查询某天/近 7 天数据、清空统计等
+    // MARK: - 查询（阶段 6：图表数据）
+
+    /// 近 7 天（含今天）逐日分钟数，按时间从早到晚排列
+    func last7Days(endingAt endDate: Date) -> [DayStat] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: endDate)
+        let all = UserDefaults.standard.dictionary(forKey: StorageKeys.dailyFocusMinutes) as? [String: Int] ?? [:]
+        return (0..<7).reversed().map { offset in
+            let day = calendar.date(byAdding: .day, value: -offset, to: today) ?? today
+            return DayStat(date: day, minutes: all[Self.dayKey(for: day)] ?? 0)
+        }
+    }
+
+    // MARK: - 维护（阶段 7 接线）
+
+    /// 清空全部统计（设置页「清除统计数据」按钮用）
+    func clearAll() {
+        UserDefaults.standard.removeObject(forKey: StorageKeys.dailyFocusMinutes)
+    }
 }

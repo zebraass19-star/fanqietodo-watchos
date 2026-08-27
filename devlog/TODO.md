@@ -4,7 +4,7 @@
 > 推进规则：**一次只推进一个阶段**，完成并通过验收（编译/CI 绿/用户确认）后再进入下一阶段。
 
 ## 进行中
-- [ ] 阶段 5：TimerView + ContentView（倒计时圆环 UI、分页 TabView、齿轮占位）——代码与评审完成，待 CI 验收
+- [ ] 阶段 6：StatisticsStore 扩展 + StatsView（近 7 天柱状图，Swift Charts）——代码与评审完成，待 CI 验收
 
 ## 已验收
 - [x] 阶段 0：需求确认与方案评审（产出 docs/ 四份标准文档）
@@ -12,6 +12,7 @@
 - [x] 阶段 2：App 入口 + 主题 + 占位界面（CI 绿 ✅）
 - [x] 阶段 3：通知模块 NotificationManager（评审通过 + CI 绿 ✅）
 - [x] 阶段 4：状态机 TimerModel + StatisticsStore 最小版（13 项逻辑评审通过 + CI 绿 ✅）
+- [x] 阶段 5：TimerView + ContentView（10 项设计评审通过 + CI 绿 ✅；期间加了 CI 错误注释提取机制，远程排错不用翻日志）
 
 ## 后续阶段（一次只做一个）
 - [ ] 阶段 2：App 入口 + 主题 + 占位界面

@@ -27,6 +27,8 @@ enum Theme {
     static let ringTrack = Color.white.opacity(0.12)
     /// 往日柱：主色 40%（图表非今日柱）
     static let pastBar = Color(red: 1.0, green: 96.0 / 255.0, blue: 0.0).opacity(0.4)
+    /// 图表基准线：白 15%（柱状图底部横线）
+    static let baseline = Color.white.opacity(0.15)
     /// 次要按钮底：白 15%（取消等次要圆形按钮）
     static let secondaryButton = Color.white.opacity(0.15)
 }
