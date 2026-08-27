@@ -98,13 +98,13 @@ struct TimerView: View {
             }
         case .focusDone:
             HStack(spacing: 8) {
-                CapsuleButton("开始休息", filled: true) { model.startRest() }
-                CapsuleButton("跳过休息", filled: false) { model.startFocus() }
+                CapsuleButton(title: "开始休息", filled: true) { model.startRest() }
+                CapsuleButton(title: "跳过休息", filled: false) { model.startFocus() }
             }
         case .restDone:
             HStack(spacing: 8) {
-                CapsuleButton("开始专注", filled: true) { model.startFocus() }
-                CapsuleButton("结束", filled: false) { model.finish() }
+                CapsuleButton(title: "开始专注", filled: true) { model.startFocus() }
+                CapsuleButton(title: "结束", filled: false) { model.finish() }
             }
         }
     }
