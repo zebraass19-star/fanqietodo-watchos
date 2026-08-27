@@ -4,17 +4,21 @@
 //
 //  系统通知总管家（docs/TECH.md §4 为唯一标准）。
 //  职责：注册通知分类、申请权限、排期/取消阶段结束通知、处理通知按钮回调。
-//  按钮回调与计时逻辑（TimerModel）的接线在阶段 8 完成。
+//  阶段 8：按钮回调接入 TimerModel（didReceive 分支）；暴露权限状态供界面提示（REQUIREMENTS F12）。
 //
 
 import Foundation
+import Combine
 import UserNotifications
 
-final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
+final class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
 
     /// 全局唯一实例。UNUserNotificationCenter 的 delegate 是弱引用，
     /// 用单例保证它一直存活（否则点通知按钮后回调无人接收）。
     static let shared = NotificationManager()
+
+    /// 通知权限是否被用户拒绝（待机页提示行用，docs/REQUIREMENTS.md F12）
+    @Published private(set) var permissionDenied = false
 
     private override init() {
         super.init()
@@ -64,7 +68,19 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         defaults.set(true, forKey: StorageKeys.didRequestNotificationPermission)
 
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in
-            // 结果不阻塞流程；后续可在此提示用户去系统设置开启
+            // 结果不阻塞流程；刷新权限状态，供待机页提示行使用
+            self.refreshPermissionStatus()
+        }
+    }
+
+    /// 读取当前通知权限状态，更新 permissionDenied。
+    /// 调用时机：App 启动、回到前台、权限弹窗结束后。
+    func refreshPermissionStatus() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            let denied = (settings.authorizationStatus == .denied)
+            DispatchQueue.main.async {
+                self.permissionDenied = denied
+            }
         }
     }
 
@@ -116,7 +132,7 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         UNUserNotificationCenter.current().add(request)
     }
 
-    // MARK: - 代理回调（按钮接线在阶段 8 完成）
+    // MARK: - 代理回调
 
     /// App 在前台时也显示带按钮的横幅（docs/TECH.md §4）
     func userNotificationCenter(
@@ -133,25 +149,34 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        // 注意：回调在后台队列执行，阶段 8 接入 TimerModel 时需切回主线程
+        // 回调在后台队列执行；TimerModel 的状态变更必须回主线程
         let action = response.actionIdentifier
+        DispatchQueue.main.async {
+            self.handle(action: action)
+            completionHandler()
+        }
+    }
 
+    /// didReceive 分支（主线程执行，docs/TECH.md §4）
+    /// TimerModel 各方法自带状态守卫，重复触发/顺序异常时自动忽略，幂等安全。
+    private func handle(action: String) {
+        let model = TimerModel.shared
         switch action {
         case NotificationID.actionStartRest:
-            // TODO(阶段 8)：补记统计 → 进入休息 → 排期休息结束通知
-            break
+            // 补记统计 → 进入休息 → 排期休息结束通知
+            model.synchronize()
+            model.startRest()
         case NotificationID.actionSkipRest:
-            // TODO(阶段 8)：补记统计 → 立即开始新一轮专注
-            break
+            // 补记统计 → 立即开始新一轮专注
+            model.synchronize()
+            model.startFocus()
         case NotificationID.actionStartFocus:
-            // TODO(阶段 8)：开始新一轮专注
-            break
+            // 开始新一轮专注
+            model.synchronize()
+            model.startFocus()
         default:
             // 点通知本体 / 划掉通知：仅补记同步状态，不改变阶段
-            // TODO(阶段 8)：synchronize()
-            break
+            model.synchronize()
         }
-
-        completionHandler()
     }
 }

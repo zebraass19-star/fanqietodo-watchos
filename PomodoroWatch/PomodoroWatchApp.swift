@@ -16,6 +16,8 @@ struct PomodoroWatchApp: App {
         NotificationManager.shared.register()
         // 权限只弹一次框（内部有标记位控制）
         NotificationManager.shared.requestPermissionIfNeeded()
+        // 读取当前权限状态（非首次启动时权限弹窗不会再弹，需要主动查询）
+        NotificationManager.shared.refreshPermissionStatus()
     }
 
     var body: some Scene {

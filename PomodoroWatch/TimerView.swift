@@ -12,6 +12,8 @@ import SwiftUI
 struct TimerView: View {
 
     @ObservedObject private var model = TimerModel.shared
+    /// 观察通知权限状态（待机页提示行，docs/REQUIREMENTS.md F12）
+    @ObservedObject private var notificationManager = NotificationManager.shared
     /// 设置项回显（待机副标题用；@AppStorage 会在设置页修改后自动刷新）
     @AppStorage(StorageKeys.focusMinutes) private var focusMinutes = 25
     @AppStorage(StorageKeys.restMinutes) private var restMinutes = 5
@@ -85,6 +87,12 @@ struct TimerView: View {
                     .font(Theme.idleSubtitleFont)
                     .foregroundStyle(Theme.textTertiary)
                 CircleButton(title: "开始", size: 52, filled: true) { model.startFocus() }
+                // 通知权限被拒绝时的提示行（docs/REQUIREMENTS.md F12 / DESIGN §4.2）
+                if notificationManager.permissionDenied {
+                    Text("通知已关闭，阶段结束提醒将无法送达。")
+                        .font(Theme.idleSubtitleFont)
+                        .foregroundStyle(Theme.textTertiary)
+                }
             }
         case .focus, .rest:
             HStack(spacing: 12) {

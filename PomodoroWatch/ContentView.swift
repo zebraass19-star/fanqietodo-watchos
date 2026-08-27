@@ -12,6 +12,8 @@ import SwiftUI
 struct ContentView: View {
     /// 设置弹层开关（齿轮按钮，docs/DESIGN.md §4.1）
     @State private var showSettings = false
+    /// App 前台/后台状态（回到前台时刷新通知权限状态）
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ZStack {
@@ -40,6 +42,12 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
+        }
+        .onChange(of: scenePhase) {
+            // 回到前台：用户可能刚在系统设置里改过通知权限，刷新提示行状态
+            if scenePhase == .active {
+                NotificationManager.shared.refreshPermissionStatus()
+            }
         }
         .preferredColorScheme(.dark)
     }
