@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 /// 某一天的专注分钟快照（图表数据源；date 为该天零点）
 struct DayStat {
@@ -14,7 +15,10 @@ struct DayStat {
     let minutes: Int
 }
 
-final class StatisticsStore {
+final class StatisticsStore: ObservableObject {
+
+    /// 数据版本号：每次记账/清空 +1，统计页据此自动刷新（阶段 7）
+    @Published private(set) var revision = 0
 
     static let shared = StatisticsStore()
 
@@ -39,6 +43,7 @@ final class StatisticsStore {
         var all = defaults.dictionary(forKey: StorageKeys.dailyFocusMinutes) as? [String: Int] ?? [:]
         all[Self.dayKey(for: date), default: 0] += minutes
         defaults.set(all, forKey: StorageKeys.dailyFocusMinutes)
+        revision += 1
     }
 
     // MARK: - 查询（阶段 6：图表数据）
@@ -59,5 +64,6 @@ final class StatisticsStore {
     /// 清空全部统计（设置页「清除统计数据」按钮用）
     func clearAll() {
         UserDefaults.standard.removeObject(forKey: StorageKeys.dailyFocusMinutes)
+        revision += 1
     }
 }

@@ -4,12 +4,15 @@
 //
 //  主界面（docs/DESIGN.md §4.1）：横向分页 TabView，共 2 页，底部圆点指示。
 //  第一页 = 计时器（TimerView）；第二页 = 统计（StatsView）。
-//  右上角齿轮 = 设置页入口（阶段 7 接线 sheet，当前占位）。
+//  右上角齿轮 = 设置页入口（sheet 弹出，设置页自带「完成」按钮）。
 //
 
 import SwiftUI
 
 struct ContentView: View {
+    /// 设置弹层开关（齿轮按钮，docs/DESIGN.md §4.1）
+    @State private var showSettings = false
+
     var body: some View {
         ZStack {
             Theme.background
@@ -27,14 +30,16 @@ struct ContentView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                // TODO(阶段 7)：点击打开设置 sheet（设置页带「完成」按钮）
                 Button {
-                    // 阶段 7 接线
+                    showSettings = true
                 } label: {
                     Image(systemName: "gearshape")
                         .foregroundStyle(Theme.textSecondary)
                 }
             }
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .preferredColorScheme(.dark)
     }

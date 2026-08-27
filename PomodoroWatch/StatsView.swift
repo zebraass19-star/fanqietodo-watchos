@@ -16,6 +16,8 @@ struct StatsView: View {
     @State private var days: [DayStat] = []
     /// 观察状态机：阶段变化时刷新统计（例如前台点通知按钮完成补记）
     @ObservedObject private var model = TimerModel.shared
+    /// 观察统计账本：数据变动（记账/清空）时刷新（阶段 7，例如设置页清除统计）
+    @ObservedObject private var store = StatisticsStore.shared
 
     var body: some View {
         VStack(spacing: 4) {
@@ -36,6 +38,7 @@ struct StatsView: View {
         }
         .onAppear { refresh() }
         .onChange(of: model.phase) { refresh() }
+        .onChange(of: store.revision) { refresh() }
     }
 
     // MARK: - 柱状图（docs/DESIGN.md §4.3）
