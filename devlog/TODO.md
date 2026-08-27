@@ -4,13 +4,14 @@
 > 推进规则：**一次只推进一个阶段**，完成并通过验收（编译/CI 绿/用户确认）后再进入下一阶段。
 
 ## 进行中
-- [ ] 阶段 4：状态机（TimerModel 7 态 + 持久化 + synchronize 补记 + StatisticsStore 最小版 + 调试钩子）
+- [ ] 阶段 5：TimerView + ContentView（倒计时圆环 UI、分页 TabView、齿轮占位）——代码与评审完成，待 CI 验收
 
 ## 已验收
 - [x] 阶段 0：需求确认与方案评审（产出 docs/ 四份标准文档）
 - [x] 阶段 1：Xcode 工程骨架 —— 文件、git 推送、GitHub Actions 云编译全部通过 ✅
 - [x] 阶段 2：App 入口 + 主题 + 占位界面（CI 绿 ✅）
 - [x] 阶段 3：通知模块 NotificationManager（评审通过 + CI 绿 ✅）
+- [x] 阶段 4：状态机 TimerModel + StatisticsStore 最小版（13 项逻辑评审通过 + CI 绿 ✅）
 
 ## 后续阶段（一次只做一个）
 - [ ] 阶段 2：App 入口 + 主题 + 占位界面

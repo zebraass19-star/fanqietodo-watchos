@@ -34,8 +34,8 @@ enum Theme {
 // MARK: - 字号（docs/DESIGN.md §3）
 
 extension Theme {
-    /// 倒计时大数字：48pt semibold，等宽数字（一秒一跳不抖动）
-    static let countdownFont = Font.system(size: 48, weight: .semibold).monospacedDigit()
+    /// 倒计时大数字：38pt semibold，等宽数字（一秒一跳不抖动；38pt 配 104pt 环，见 docs/DESIGN.md §4.2 尺寸说明）
+    static let countdownFont = Font.system(size: 38, weight: .semibold).monospacedDigit()
     /// 阶段标签：16pt semibold
     static let phaseLabelFont = Font.system(size: 16, weight: .semibold)
     /// 页面标题：17pt semibold
