@@ -4,11 +4,12 @@
 > 推进规则：**一次只推进一个阶段**，完成并通过验收（编译/CI 绿/用户确认）后再进入下一阶段。
 
 ## 进行中
-- [ ] 阶段 2：App 入口 + 主题 + 占位界面（Theme.swift / PomodoroWatchApp.swift / 占位 ContentView）
+- [ ] 阶段 3：通知模块（NotificationManager：分类注册/权限/排期取消/willPresent/didReceive 接桩）
 
 ## 已验收
 - [x] 阶段 0：需求确认与方案评审（产出 docs/ 四份标准文档）
 - [x] 阶段 1：Xcode 工程骨架 —— 文件、git 推送、GitHub Actions 云编译全部通过 ✅
+- [x] 阶段 2：App 入口 + 主题 + 占位界面（CI 绿 ✅）
 
 ## 后续阶段（一次只做一个）
 - [ ] 阶段 2：App 入口 + 主题 + 占位界面

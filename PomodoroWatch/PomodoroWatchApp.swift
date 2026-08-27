@@ -12,7 +12,10 @@ import SwiftUI
 @main
 struct PomodoroWatchApp: App {
     init() {
-        // TODO(阶段 3)：注册通知分类与 UNUserNotificationCenter 代理
+        // 通知分类与代理必须在 App 启动最早期注册（docs/TECH.md §2.6）
+        NotificationManager.shared.register()
+        // 权限只弹一次框（内部有标记位控制）
+        NotificationManager.shared.requestPermissionIfNeeded()
     }
 
     var body: some Scene {
